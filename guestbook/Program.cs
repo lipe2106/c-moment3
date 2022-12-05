@@ -6,6 +6,7 @@
 */
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.IO;
 
 using System.Text.Json;
@@ -26,11 +27,16 @@ namespace moment3
             }
         }
 
-        public Post addPost(Post post)
+        public Post addPost(string auth, string cont)
         {
-            posts.Add(post);
+            Post obj = new Post(); // Create object of class Post
+
+            // Add user input to object 
+            obj.Author = auth;
+            obj.Content = cont;
+            posts.Add(obj);
             marshal(); // Call class method marshal
-            return post;
+            return obj;
         }
 
         public int delPost(int index)
@@ -56,18 +62,14 @@ namespace moment3
     public class Post
     {
         private string author;
-        private string title;
         private string content;
+
         public string Author
         {
             set { this.author = value; } // Set author input to class author
             get { return this.author; }
         }
-        public string Title
-        {
-            set { this.title = value; } // Set iput title to class title
-            get { return this.title; }
-        }
+
         public string Content
         {
             set { this.content = value; } // Set input content to class content 
@@ -104,9 +106,8 @@ namespace moment3
                 foreach (Post post in guestbook.getPosts())
                 {
                     Console.WriteLine("\n[" + i++ + "]");
-                    Console.WriteLine("Titel: " + post.Title);
                     Console.WriteLine("Av: " + post.Author);
-                    Console.WriteLine("Innehåll: " + post.Content);
+                    Console.WriteLine("Inlägg: " + post.Content);
                 }
                
                 int input = (int)Console.ReadKey(true).Key; // Save users menu choice 
@@ -116,7 +117,7 @@ namespace moment3
                 {
                     case '1':
                         Console.CursorVisible = true;
-                        Post obj = new Post();
+                        //Post obj = new Post();
 
                         // Ask user for input and save
                         Console.Write("\nAnge skribent: ");
@@ -129,42 +130,21 @@ namespace moment3
                             Console.Write("\nAnge skribent: ");
                             author = Console.ReadLine();
                         }
-                        
-                        // When correct save input in Post object
-                        obj.Author = author;
-
+                    
                         // Ask user for input and save 
-                        Console.Write("Ange titel: ");
-                        string title = Console.ReadLine();
-
-                        // If input is empty print error message and ask for new input
-                        while (title == "")
-                        {
-                            Console.Write("\nDu måste ange en korrekt titel. Försök igen");
-                            Console.Write("\nAnge titel: ");
-                            title = Console.ReadLine();
-                        }
-
-                        // When correct save input in Post object
-                        obj.Title = title;
-
-                        // Ask user for input and save 
-                        Console.Write("Ange innehåll: ");
+                        Console.Write("Skriv inlägg: ");
                         string content = Console.ReadLine();
 
                         // If input is empty print error message and ask for new input
                         while (content == "")
                         {
-                            Console.Write("\nDu måste ange ett korrekt innehåll. Försök igen");
-                            Console.Write("\nAnge innehåll: ");
+                            Console.Write("\nDitt inlägg kan inte vara tomt. Försök igen");
+                            Console.Write("\nSkriv inlägg: ");
                             content = Console.ReadLine();
                         }
 
-                        // When correct save input in Post object
-                        obj.Content = content;
-
                         // Add post to guestbook
-                        if (!String.IsNullOrEmpty(author) && !String.IsNullOrEmpty(title) && !String.IsNullOrEmpty(content)) guestbook.addPost(obj);
+                        if (!String.IsNullOrEmpty(author) && !String.IsNullOrEmpty(content)) guestbook.addPost(author, content);
                         break;
                     case '2':
                         Console.CursorVisible = true;
